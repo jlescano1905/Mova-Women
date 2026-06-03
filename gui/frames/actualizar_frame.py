@@ -28,8 +28,8 @@ class ActualizarFrame(ctk.CTkFrame):
     # ── Pasos ────────────────────────────────────────────────
 
     def _construir_pasos(self):
-        self.paso1    = self._frame_buscar()
-        self.paso2    = self._frame_opciones()
+        self.paso1     = self._frame_buscar()
+        self.paso2     = self._frame_opciones()
         self.paso3_tel = self._frame_actualizar_tel()
         self.paso3_mem = self._frame_renovar_mem()
         for f in (self.paso1, self.paso2, self.paso3_tel, self.paso3_mem):
@@ -58,7 +58,7 @@ class ActualizarFrame(ctk.CTkFrame):
 
         card = ctk.CTkFrame(
             f, fg_color=FONDO_CARD,
-            corner_radius=20, width=620, height=400)
+            corner_radius=24, width=780, height=480)
         card.grid(row=0, column=0)
         card.grid_propagate(False)
         card.grid_columnconfigure(0, weight=1)
@@ -67,7 +67,7 @@ class ActualizarFrame(ctk.CTkFrame):
         ctk.CTkLabel(
             card, text="Actualizar datos de cliente",
             font=fuente_titulo(), text_color=TEXTO
-        ).grid(row=0, column=0, pady=(36, 0))
+        ).grid(row=0, column=0, pady=(40, 0))
 
         ctk.CTkLabel(
             card, text="Ingresa el DNI de la cliente",
@@ -75,23 +75,23 @@ class ActualizarFrame(ctk.CTkFrame):
         ).grid(row=1, column=0, pady=(8, 4))
 
         entry_frame = ctk.CTkFrame(card, fg_color="transparent")
-        entry_frame.grid(row=2, column=0, padx=60, pady=(0, 8), sticky="ew")
+        entry_frame.grid(row=2, column=0, padx=80, pady=(0, 8), sticky="ew")
         entry_frame.grid_columnconfigure(0, weight=1)
 
         self.entry_dni = ctk.CTkEntry(
             entry_frame, placeholder_text="8 dígitos",
-            height=50, font=fuente(18),
+            height=62, font=fuente(22),
             fg_color=CAMPO, border_color=BTN_SECUNDARIO,
             text_color=TEXTO, placeholder_text_color=TEXTO_CAMPO,
-            corner_radius=10)
-        self.entry_dni.grid(row=0, column=0, sticky="ew", padx=(0, 10))
+            corner_radius=12)
+        self.entry_dni.grid(row=0, column=0, sticky="ew", padx=(0, 12))
         self.entry_dni.bind("<Return>", lambda e: "break")
 
         ctk.CTkButton(
-            entry_frame, text="Buscar", width=130, height=50,
+            entry_frame, text="Buscar", width=150, height=62,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=10, command=self._buscar_socio
+            corner_radius=12, command=self._buscar_socio
         ).grid(row=0, column=1)
 
         self.label_err_buscar = ctk.CTkLabel(
@@ -126,7 +126,7 @@ class ActualizarFrame(ctk.CTkFrame):
 
         card = ctk.CTkFrame(
             f, fg_color=FONDO_CARD,
-            corner_radius=20, width=660, height=560)
+            corner_radius=24, width=820, height=660)
         card.grid(row=0, column=0)
         card.grid_propagate(False)
         card.grid_columnconfigure(0, weight=1)
@@ -135,11 +135,11 @@ class ActualizarFrame(ctk.CTkFrame):
         ctk.CTkLabel(
             card, text="Datos actuales de la cliente",
             font=fuente_titulo(), text_color=TEXTO
-        ).grid(row=0, column=0, pady=(30, 0))
+        ).grid(row=0, column=0, pady=(36, 0))
 
-        # Tabla de datos
-        info = ctk.CTkFrame(card, fg_color=CAMPO, corner_radius=12)
-        info.grid(row=1, column=0, padx=50, pady=(12, 0), sticky="ew")
+        # Tabla datos
+        info = ctk.CTkFrame(card, fg_color=CAMPO, corner_radius=14)
+        info.grid(row=1, column=0, padx=60, pady=(12, 0), sticky="ew")
         info.grid_columnconfigure(1, weight=1)
 
         campos = ["Nombre", "Apellido", "DNI",
@@ -148,56 +148,54 @@ class ActualizarFrame(ctk.CTkFrame):
 
         for i, campo in enumerate(campos):
             color_fila = FONDO_CARD if i % 2 == 0 else CAMPO
-            fila = ctk.CTkFrame(info, fg_color=color_fila, corner_radius=6)
+            fila = ctk.CTkFrame(info, fg_color=color_fila, corner_radius=8)
             fila.grid(row=i, column=0, columnspan=2,
                       sticky="ew", padx=4, pady=2)
             fila.grid_columnconfigure(1, weight=1)
 
             ctk.CTkLabel(
                 fila, text=f"  {campo}:",
-                font=fuente(14, "bold"),
+                font=fuente(17, "bold"),
                 text_color=TEXTO_SUAVE, anchor="w"
-            ).grid(row=0, column=0, padx=12, pady=8, sticky="w")
+            ).grid(row=0, column=0, padx=16, pady=10, sticky="w")
 
             lbl = ctk.CTkLabel(
                 fila, text="—",
-                font=fuente(14), text_color=TEXTO, anchor="w")
-            lbl.grid(row=0, column=1, padx=12, pady=8, sticky="w")
+                font=fuente(17), text_color=TEXTO, anchor="w")
+            lbl.grid(row=0, column=1, padx=16, pady=10, sticky="w")
             self.labels_datos[campo] = lbl
 
-        # Pregunta
         ctk.CTkLabel(
             card, text="¿Qué deseas actualizar?",
-            font=fuente(16), text_color=TEXTO_SUAVE
+            font=fuente(20), text_color=TEXTO_SUAVE
         ).grid(row=2, column=0, pady=(16, 4))
 
-        # Botones acción
         btns = ctk.CTkFrame(card, fg_color="transparent")
-        btns.grid(row=3, column=0, padx=50, pady=(0, 8), sticky="ew")
+        btns.grid(row=3, column=0, padx=60, pady=(0, 8), sticky="ew")
         btns.grid_columnconfigure((0, 1), weight=1)
 
         ctk.CTkButton(
-            btns, text="📞  Actualizar teléfono", height=52,
+            btns, text="📞  Actualizar teléfono", height=62,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=12,
+            corner_radius=14,
             command=lambda: self._mostrar_paso("tel")
-        ).grid(row=0, column=0, padx=(0, 8), sticky="ew")
+        ).grid(row=0, column=0, padx=(0, 10), sticky="ew")
 
         ctk.CTkButton(
-            btns, text="🔄  Renovar membresía", height=52,
+            btns, text="🔄  Renovar membresía", height=62,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=12, command=self._ir_renovar
-        ).grid(row=0, column=1, padx=(8, 0), sticky="ew")
+            corner_radius=14, command=self._ir_renovar
+        ).grid(row=0, column=1, padx=(10, 0), sticky="ew")
 
         ctk.CTkButton(
-            card, text="←  Volver", height=46,
+            card, text="←  Volver", height=54,
             font=fuente_boton(), fg_color=BTN_SECUNDARIO,
             hover_color="#C4A882", text_color=TEXTO,
-            corner_radius=12,
+            corner_radius=14,
             command=lambda: self._mostrar_paso(1)
-        ).grid(row=4, column=0, padx=50, pady=(0, 28), sticky="ew")
+        ).grid(row=4, column=0, padx=60, pady=(0, 32), sticky="ew")
 
         return f
 
@@ -223,7 +221,7 @@ class ActualizarFrame(ctk.CTkFrame):
 
         card = ctk.CTkFrame(
             f, fg_color=FONDO_CARD,
-            corner_radius=20, width=580, height=380)
+            corner_radius=24, width=740, height=460)
         card.grid(row=0, column=0)
         card.grid_propagate(False)
         card.grid_columnconfigure(0, weight=1)
@@ -232,7 +230,7 @@ class ActualizarFrame(ctk.CTkFrame):
         ctk.CTkLabel(
             card, text="Actualizar teléfono",
             font=fuente_titulo(), text_color=TEXTO
-        ).grid(row=0, column=0, pady=(36, 0))
+        ).grid(row=0, column=0, pady=(40, 0))
 
         ctk.CTkLabel(
             card, text="Nuevo número de teléfono:",
@@ -240,12 +238,12 @@ class ActualizarFrame(ctk.CTkFrame):
         ).grid(row=1, column=0, pady=(8, 4))
 
         self.entry_tel_nuevo = ctk.CTkEntry(
-            card, placeholder_text="9 dígitos", height=50,
-            font=fuente(18), fg_color=CAMPO,
+            card, placeholder_text="9 dígitos", height=62,
+            font=fuente(22), fg_color=CAMPO,
             border_color=BTN_SECUNDARIO, text_color=TEXTO,
-            placeholder_text_color=TEXTO_CAMPO, corner_radius=10)
+            placeholder_text_color=TEXTO_CAMPO, corner_radius=12)
         self.entry_tel_nuevo.grid(
-            row=2, column=0, padx=60, pady=(0, 8), sticky="ew")
+            row=2, column=0, padx=80, pady=(0, 8), sticky="ew")
         self.entry_tel_nuevo.bind("<Return>", lambda e: "break")
 
         self.label_err_tel = ctk.CTkLabel(
@@ -253,23 +251,23 @@ class ActualizarFrame(ctk.CTkFrame):
         self.label_err_tel.grid(row=3, column=0)
 
         nav = ctk.CTkFrame(card, fg_color="transparent")
-        nav.grid(row=4, column=0, padx=60, pady=(8, 36), sticky="ew")
+        nav.grid(row=4, column=0, padx=80, pady=(8, 40), sticky="ew")
         nav.grid_columnconfigure((0, 1), weight=1)
 
         ctk.CTkButton(
-            nav, text="←  Volver", height=50,
+            nav, text="←  Volver", height=62,
             font=fuente_boton(), fg_color=BTN_SECUNDARIO,
             hover_color="#C4A882", text_color=TEXTO,
-            corner_radius=12,
+            corner_radius=14,
             command=lambda: self._mostrar_paso(2)
-        ).grid(row=0, column=0, padx=(0, 8), sticky="ew")
+        ).grid(row=0, column=0, padx=(0, 10), sticky="ew")
 
         ctk.CTkButton(
-            nav, text="💾  Guardar", height=50,
+            nav, text="💾  Guardar", height=62,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=12, command=self._guardar_telefono
-        ).grid(row=0, column=1, padx=(8, 0), sticky="ew")
+            corner_radius=14, command=self._guardar_telefono
+        ).grid(row=0, column=1, padx=(10, 0), sticky="ew")
 
         return f
 
@@ -292,26 +290,26 @@ class ActualizarFrame(ctk.CTkFrame):
         dialogo.grab_set()
         dialogo.configure(fg_color=FONDO)
         dialogo.update_idletasks()
-        x = (dialogo.winfo_screenwidth()  // 2) - 230
-        y = (dialogo.winfo_screenheight() // 2) - 100
-        dialogo.geometry(f"460x200+{x}+{y}")
+        x = (dialogo.winfo_screenwidth()  // 2) - 280
+        y = (dialogo.winfo_screenheight() // 2) - 120
+        dialogo.geometry(f"560x240+{x}+{y}")
 
-        inner = ctk.CTkFrame(dialogo, fg_color=FONDO_CARD, corner_radius=16)
+        inner = ctk.CTkFrame(dialogo, fg_color=FONDO_CARD, corner_radius=20)
         inner.pack(fill="both", expand=True, padx=16, pady=16)
 
         ctk.CTkLabel(
             inner, text="¿Confirmas el cambio de teléfono?",
-            font=fuente(17, "bold"), text_color=TEXTO
-        ).pack(pady=(24, 8))
+            font=fuente(22, "bold"), text_color=TEXTO
+        ).pack(pady=(28, 10))
 
         ctk.CTkLabel(
             inner,
             text=f"{self._socio['telefono']}  →  {tel}",
-            font=fuente(15), text_color=TEXTO_SUAVE
-        ).pack(pady=(0, 16))
+            font=fuente(18), text_color=TEXTO_SUAVE
+        ).pack(pady=(0, 20))
 
         btn_f = ctk.CTkFrame(inner, fg_color="transparent")
-        btn_f.pack(fill="x", padx=30, pady=(0, 20))
+        btn_f.pack(fill="x", padx=40, pady=(0, 24))
         btn_f.grid_columnconfigure((0, 1), weight=1)
 
         def _cancelar():
@@ -329,18 +327,18 @@ class ActualizarFrame(ctk.CTkFrame):
             self.after(2000, lambda: self._mostrar_paso(2))
 
         ctk.CTkButton(
-            btn_f, text="Cancelar", height=44,
+            btn_f, text="Cancelar", height=54,
             font=fuente_boton(), fg_color=BTN_SECUNDARIO,
             hover_color="#C4A882", text_color=TEXTO,
-            corner_radius=10, command=_cancelar
-        ).grid(row=0, column=0, padx=(0, 8), sticky="ew")
+            corner_radius=12, command=_cancelar
+        ).grid(row=0, column=0, padx=(0, 10), sticky="ew")
 
         ctk.CTkButton(
-            btn_f, text="✅  Sí, guardar", height=44,
+            btn_f, text="✅  Sí, guardar", height=54,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=10, command=_confirmar
-        ).grid(row=0, column=1, padx=(8, 0), sticky="ew")
+            corner_radius=12, command=_confirmar
+        ).grid(row=0, column=1, padx=(10, 0), sticky="ew")
 
     # ════════════════════════════════════════════════════════
     # PASO 3B — Renovar membresía
@@ -353,7 +351,7 @@ class ActualizarFrame(ctk.CTkFrame):
 
         card = ctk.CTkFrame(
             f, fg_color=FONDO_CARD,
-            corner_radius=20, width=680, height=560)
+            corner_radius=24, width=840, height=680)
         card.grid(row=0, column=0)
         card.grid_propagate(False)
         card.grid_columnconfigure(0, weight=1)
@@ -362,7 +360,7 @@ class ActualizarFrame(ctk.CTkFrame):
         ctk.CTkLabel(
             card, text="Renovar membresía",
             font=fuente_titulo(), text_color=TEXTO
-        ).grid(row=0, column=0, pady=(30, 0))
+        ).grid(row=0, column=0, pady=(36, 0))
 
         ctk.CTkLabel(
             card, text="Selecciona el nuevo plan:",
@@ -377,10 +375,11 @@ class ActualizarFrame(ctk.CTkFrame):
             ctk.CTkRadioButton(
                 planes_frame, text=plan,
                 variable=self.plan_var_mem, value=plan,
-                font=fuente(15), text_color=TEXTO,
+                font=fuente(20), text_color=TEXTO,
                 fg_color=BTN_PRINCIPAL, hover_color="#9DC95A",
+                radiobutton_width=28, radiobutton_height=28,
                 command=self._on_plan_mem
-            ).grid(row=0, column=i, padx=20)
+            ).grid(row=0, column=i, padx=24)
 
         ctk.CTkLabel(
             card, text="Fecha de inicio de la renovación:",
@@ -391,41 +390,41 @@ class ActualizarFrame(ctk.CTkFrame):
         self.fecha_picker_mem.grid(row=4, column=0, pady=(0, 8))
 
         ctk.CTkButton(
-            card, text="👁  Ver resumen", height=46,
+            card, text="👁  Ver resumen", height=58,
             font=fuente_boton(), fg_color=BTN_SECUNDARIO,
             hover_color="#C4A882", text_color=TEXTO,
-            corner_radius=12, command=self._ver_resumen_mem
-        ).grid(row=5, column=0, padx=60, pady=(0, 4), sticky="ew")
+            corner_radius=14, command=self._ver_resumen_mem
+        ).grid(row=5, column=0, padx=80, pady=(0, 4), sticky="ew")
 
         self.label_resumen_mem = ctk.CTkLabel(
             card, text="",
-            font=fuente(14), text_color=TEXTO,
-            wraplength=540, justify="center")
-        self.label_resumen_mem.grid(row=6, column=0, padx=60, pady=(0, 4))
+            font=fuente(18), text_color=TEXTO,
+            wraplength=660, justify="center")
+        self.label_resumen_mem.grid(row=6, column=0, padx=80, pady=(0, 4))
 
         self.label_err_mem = ctk.CTkLabel(
             card, text="",
-            font=fuente_pequeña(), wraplength=540)
-        self.label_err_mem.grid(row=7, column=0, padx=60)
+            font=fuente_pequeña(), wraplength=660)
+        self.label_err_mem.grid(row=7, column=0, padx=80)
 
         nav = ctk.CTkFrame(card, fg_color="transparent")
-        nav.grid(row=8, column=0, padx=60, pady=(8, 30), sticky="ew")
+        nav.grid(row=8, column=0, padx=80, pady=(8, 36), sticky="ew")
         nav.grid_columnconfigure((0, 1), weight=1)
 
         ctk.CTkButton(
-            nav, text="←  Volver", height=50,
+            nav, text="←  Volver", height=62,
             font=fuente_boton(), fg_color=BTN_SECUNDARIO,
             hover_color="#C4A882", text_color=TEXTO,
-            corner_radius=12,
+            corner_radius=14,
             command=lambda: self._mostrar_paso(2)
-        ).grid(row=0, column=0, padx=(0, 8), sticky="ew")
+        ).grid(row=0, column=0, padx=(0, 10), sticky="ew")
 
         ctk.CTkButton(
-            nav, text="🔄  Confirmar renovación", height=50,
+            nav, text="🔄  Confirmar renovación", height=62,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=12, command=self._confirmar_renovacion
-        ).grid(row=0, column=1, padx=(8, 0), sticky="ew")
+            corner_radius=14, command=self._confirmar_renovacion
+        ).grid(row=0, column=1, padx=(10, 0), sticky="ew")
 
         return f
 
@@ -485,17 +484,17 @@ class ActualizarFrame(ctk.CTkFrame):
         dialogo.grab_set()
         dialogo.configure(fg_color=FONDO)
         dialogo.update_idletasks()
-        x = (dialogo.winfo_screenwidth()  // 2) - 260
-        y = (dialogo.winfo_screenheight() // 2) - 110
-        dialogo.geometry(f"520x220+{x}+{y}")
+        x = (dialogo.winfo_screenwidth()  // 2) - 300
+        y = (dialogo.winfo_screenheight() // 2) - 150
+        dialogo.geometry(f"600x300+{x}+{y}")
 
-        inner = ctk.CTkFrame(dialogo, fg_color=FONDO_CARD, corner_radius=16)
+        inner = ctk.CTkFrame(dialogo, fg_color=FONDO_CARD, corner_radius=20)
         inner.pack(fill="both", expand=True, padx=16, pady=16)
 
         ctk.CTkLabel(
             inner, text="¿Confirmas la renovación?",
-            font=fuente(17, "bold"), text_color=TEXTO
-        ).pack(pady=(24, 8), padx=30)
+            font=fuente(22, "bold"), text_color=TEXTO
+        ).pack(pady=(30, 10), padx=40)
 
         ctk.CTkLabel(
             inner,
@@ -504,11 +503,11 @@ class ActualizarFrame(ctk.CTkFrame):
                   f"Plan: {plan}  |  "
                   f"{formatear_fecha_legible(self._nueva_fecha_ini)} → "
                   f"{formatear_fecha_legible(self._nueva_fecha_fin)}"),
-            font=fuente(13), text_color=TEXTO_SUAVE
-        ).pack(pady=(0, 20), padx=30)
+            font=fuente(17), text_color=TEXTO_SUAVE
+        ).pack(pady=(0, 24), padx=40)
 
         btn_f = ctk.CTkFrame(inner, fg_color="transparent")
-        btn_f.pack(fill="x", padx=30, pady=(0, 20))
+        btn_f.pack(fill="x", padx=40, pady=(0, 24))
         btn_f.grid_columnconfigure((0, 1), weight=1)
 
         def _cancelar():
@@ -530,15 +529,15 @@ class ActualizarFrame(ctk.CTkFrame):
             self.after(2000, lambda: self._mostrar_paso(2))
 
         ctk.CTkButton(
-            btn_f, text="Cancelar", height=44,
+            btn_f, text="Cancelar", height=54,
             font=fuente_boton(), fg_color=BTN_SECUNDARIO,
             hover_color="#C4A882", text_color=TEXTO,
-            corner_radius=10, command=_cancelar
-        ).grid(row=0, column=0, padx=(0, 8), sticky="ew")
+            corner_radius=12, command=_cancelar
+        ).grid(row=0, column=0, padx=(0, 10), sticky="ew")
 
         ctk.CTkButton(
-            btn_f, text="✅  Sí, renovar", height=44,
+            btn_f, text="✅  Sí, renovar", height=54,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=10, command=_guardar
-        ).grid(row=0, column=1, padx=(8, 0), sticky="ew")
+            corner_radius=12, command=_guardar
+        ).grid(row=0, column=1, padx=(10, 0), sticky="ew")

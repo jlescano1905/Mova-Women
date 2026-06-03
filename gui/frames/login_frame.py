@@ -18,26 +18,25 @@ class LoginFrame(ctk.CTkFrame):
 
         card = ctk.CTkFrame(
             self, fg_color=FONDO_CARD,
-            corner_radius=20, width=580, height=580)
+            corner_radius=24, width=740, height=700)
         card.grid(row=0, column=0)
         card.grid_propagate(False)
         card.grid_columnconfigure(0, weight=1)
         card.grid_rowconfigure((0,1,2,3,4,5,6,7,8), weight=1)
 
-        # Logo desde app (ya cargado en main.py desde assets/)
+        # Logo
         logo_img = getattr(self.app, "_logo_img", None)
         if logo_img:
             ctk.CTkLabel(
                 card, image=logo_img, text="",
                 fg_color="transparent"
-            ).grid(row=0, column=0, pady=(36, 0))
+            ).grid(row=0, column=0, pady=(40, 0))
         else:
             ctk.CTkLabel(
-                card, text="💪", font=fuente(48),
+                card, text="💪", font=fuente(56),
                 fg_color="transparent"
-            ).grid(row=0, column=0, pady=(36, 0))
+            ).grid(row=0, column=0, pady=(40, 0))
 
-        # Nombre
         ctk.CTkLabel(
             card, text="Mova Women",
             font=fuente_titulo(), text_color=TEXTO
@@ -45,53 +44,49 @@ class LoginFrame(ctk.CTkFrame):
 
         ctk.CTkLabel(
             card, text="Donde nace tu fuerza",
-            font=fuente(15), text_color=TEXTO_SUAVE
+            font=fuente(18), text_color=TEXTO_SUAVE
         ).grid(row=2, column=0, pady=(0, 8))
 
-        # Usuario
         ctk.CTkLabel(
             card, text="Usuario", anchor="w",
             font=fuente_label(), text_color=TEXTO
-        ).grid(row=3, column=0, sticky="w", padx=60)
+        ).grid(row=3, column=0, sticky="w", padx=80)
 
         self.entry_usuario = ctk.CTkEntry(
             card, placeholder_text="Ingresa tu usuario",
-            height=50, font=fuente_entrada(),
+            height=60, font=fuente_entrada(),
             fg_color=CAMPO, border_color=BTN_SECUNDARIO,
             text_color=TEXTO, placeholder_text_color=TEXTO_CAMPO,
-            corner_radius=10)
+            corner_radius=12)
         self.entry_usuario.grid(
-            row=4, column=0, padx=60, pady=(4, 14), sticky="ew")
+            row=4, column=0, padx=80, pady=(4, 16), sticky="ew")
 
-        # Contraseña
         ctk.CTkLabel(
             card, text="Contraseña", anchor="w",
             font=fuente_label(), text_color=TEXTO
-        ).grid(row=5, column=0, sticky="w", padx=60)
+        ).grid(row=5, column=0, sticky="w", padx=80)
 
         self.entry_password = ctk.CTkEntry(
             card, placeholder_text="Ingresa tu contraseña",
-            show="•", height=50, font=fuente_entrada(),
+            show="•", height=60, font=fuente_entrada(),
             fg_color=CAMPO, border_color=BTN_SECUNDARIO,
             text_color=TEXTO, placeholder_text_color=TEXTO_CAMPO,
-            corner_radius=10)
+            corner_radius=12)
         self.entry_password.grid(
-            row=6, column=0, padx=60, pady=(4, 6), sticky="ew")
+            row=6, column=0, padx=80, pady=(4, 6), sticky="ew")
 
-        # Error
         self.label_error = ctk.CTkLabel(
             card, text="",
             font=fuente_pequeña(), text_color=ERROR)
         self.label_error.grid(row=7, column=0, pady=(0, 4))
 
-        # Botón
         ctk.CTkButton(
             card, text="Ingresar",
-            height=54, font=fuente_boton(),
+            height=65, font=fuente_boton(),
             fg_color=BTN_PRINCIPAL, hover_color="#9DC95A",
-            text_color=TEXTO, corner_radius=12,
+            text_color=TEXTO, corner_radius=14,
             command=self._intentar_login
-        ).grid(row=8, column=0, padx=60, pady=(4, 36), sticky="ew")
+        ).grid(row=8, column=0, padx=80, pady=(4, 40), sticky="ew")
 
     def _intentar_login(self):
         usuario  = self.entry_usuario.get().strip()

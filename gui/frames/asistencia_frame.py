@@ -20,83 +20,71 @@ class AsistenciaFrame(ctk.CTkFrame):
         self._limpiar()
 
     def _construir_ui(self):
-        # Card principal
-        self.card = ctk.CTkFrame(
-            self,
-            fg_color=FONDO_CARD,
-            corner_radius=20,
-            width=620, height=560
-        )
-        self.card.grid(row=0, column=0)
-        self.card.grid_propagate(False)
-        self.card.grid_columnconfigure(0, weight=1)
-        self.card.grid_rowconfigure(0, weight=1)
-        self.card.grid_rowconfigure(1, weight=0)
-        self.card.grid_rowconfigure(2, weight=0)
-        self.card.grid_rowconfigure(3, weight=2)
-        self.card.grid_rowconfigure(4, weight=0)
+        card = ctk.CTkFrame(
+            self, fg_color=FONDO_CARD,
+            corner_radius=24, width=780, height=680)
+        card.grid(row=0, column=0)
+        card.grid_propagate(False)
+        card.grid_columnconfigure(0, weight=1)
+        card.grid_rowconfigure(0, weight=1)
+        card.grid_rowconfigure(1, weight=0)
+        card.grid_rowconfigure(2, weight=0)
+        card.grid_rowconfigure(3, weight=3)
+        card.grid_rowconfigure(4, weight=0)
 
         # Título
         ctk.CTkLabel(
-            self.card,
-            text="Asistencia de socio",
-            font=fuente_titulo(),
-            text_color=TEXTO
-        ).grid(row=0, column=0, pady=(36, 0))
+            card,
+            text="Asistencia de cliente",
+            font=fuente_titulo(), text_color=TEXTO
+        ).grid(row=0, column=0, pady=(40, 0))
 
-        # ── Entrada DNI ──────────────────────────────────────
+        # Label DNI
         ctk.CTkLabel(
-            self.card,
+            card,
             text="Ingresa el DNI de la cliente",
-            font=fuente_label(),
-            text_color=TEXTO_SUAVE
-        ).grid(row=1, column=0, pady=(16, 4))
+            font=fuente_label(), text_color=TEXTO_SUAVE
+        ).grid(row=1, column=0, pady=(20, 4))
 
-        entry_frame = ctk.CTkFrame(self.card, fg_color="transparent")
-        entry_frame.grid(row=2, column=0, padx=60, pady=(0, 16), sticky="ew")
+        # Entry + botón
+        entry_frame = ctk.CTkFrame(card, fg_color="transparent")
+        entry_frame.grid(row=2, column=0, padx=80, pady=(0, 16), sticky="ew")
         entry_frame.grid_columnconfigure(0, weight=1)
 
         self.entry_dni = ctk.CTkEntry(
             entry_frame,
             placeholder_text="8 dígitos",
-            height=52,
-            font=fuente(18),
-            fg_color=CAMPO,
-            border_color=BTN_SECUNDARIO,
-            text_color=TEXTO,
-            placeholder_text_color=TEXTO_CAMPO,
-            corner_radius=10
-        )
-        self.entry_dni.grid(row=0, column=0, sticky="ew", padx=(0, 10))
+            height=65, font=fuente(22),
+            fg_color=CAMPO, border_color=BTN_SECUNDARIO,
+            text_color=TEXTO, placeholder_text_color=TEXTO_CAMPO,
+            corner_radius=12)
+        self.entry_dni.grid(row=0, column=0, sticky="ew", padx=(0, 12))
         self.entry_dni.bind("<Return>", lambda e: self._verificar())
         self.entry_dni.bind("<KeyPress-Return>", lambda e: "break")
 
         ctk.CTkButton(
             entry_frame,
             text="Verificar",
-            width=130, height=52,
+            width=160, height=65,
             font=fuente_boton(),
             fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A",
             text_color=TEXTO,
-            corner_radius=10,
+            corner_radius=12,
             command=self._verificar
         ).grid(row=0, column=1)
 
-        # ── Resultado ────────────────────────────────────────
+        # Resultado
         self.resultado_frame = ctk.CTkFrame(
-            self.card,
-            fg_color="transparent",
-            corner_radius=14
-        )
+            card, fg_color="transparent", corner_radius=16)
         self.resultado_frame.grid(
-            row=3, column=0, padx=60, pady=(0, 16), sticky="nsew")
+            row=3, column=0, padx=80, pady=(0, 16), sticky="nsew")
         self.resultado_frame.grid_columnconfigure(0, weight=1)
         self.resultado_frame.grid_rowconfigure((0,1,2,3,4), weight=1)
 
         self.label_nombre = ctk.CTkLabel(
             self.resultado_frame, text="",
-            font=fuente(22, "bold"), text_color=TEXTO)
+            font=fuente(28, "bold"), text_color=TEXTO)
         self.label_nombre.grid(row=0, column=0)
 
         self.label_datos = ctk.CTkLabel(
@@ -106,8 +94,8 @@ class AsistenciaFrame(ctk.CTkFrame):
 
         self.label_vigencia = ctk.CTkLabel(
             self.resultado_frame, text="",
-            font=fuente(22, "bold"))
-        self.label_vigencia.grid(row=2, column=0, pady=(8, 4))
+            font=fuente(26, "bold"))
+        self.label_vigencia.grid(row=2, column=0, pady=(10, 4))
 
         self.label_fechas = ctk.CTkLabel(
             self.resultado_frame, text="",
@@ -119,22 +107,18 @@ class AsistenciaFrame(ctk.CTkFrame):
             font=fuente_label())
         self.label_extra.grid(row=4, column=0, pady=(4, 0))
 
-        # ── Botón limpiar ────────────────────────────────────
+        # Botón limpiar
         self.btn_limpiar = ctk.CTkButton(
-            self.card,
+            card,
             text="🔄  Nueva consulta",
-            height=48,
-            font=fuente_boton(),
+            height=60, font=fuente_boton(),
             fg_color=BTN_SECUNDARIO,
             hover_color="#C4A882",
-            text_color=TEXTO,
-            corner_radius=12,
+            text_color=TEXTO, corner_radius=14,
             command=self._limpiar
         )
-        self.btn_limpiar.grid(row=4, column=0, padx=60, pady=(0, 36), sticky="ew")
+        self.btn_limpiar.grid(row=4, column=0, padx=80, pady=(0, 40), sticky="ew")
         self.btn_limpiar.grid_remove()
-
-    # ── Lógica ───────────────────────────────────────────────
 
     def _limpiar(self):
         self.entry_dni.delete(0, "end")
@@ -156,7 +140,7 @@ class AsistenciaFrame(ctk.CTkFrame):
 
         socio = buscar_socio_por_dni(dni)
         if not socio:
-            self._mostrar_error("⚠ DNI no asociado a ningún socio")
+            self._mostrar_error("⚠ DNI no asociado a ningún cliente")
             return
 
         hoy_str  = date.today().strftime("%Y-%m-%d")
@@ -176,8 +160,7 @@ class AsistenciaFrame(ctk.CTkFrame):
         if not vigente:
             self.resultado_frame.configure(fg_color="#F9DDD5")
             self.label_vigencia.configure(
-                text="❌ Membresía vencida",
-                text_color=ERROR)
+                text="❌ Membresía vencida", text_color=ERROR)
             self.label_extra.configure(text="", text_color=TEXTO_SUAVE)
             threading.Thread(target=sonido_error, daemon=True).start()
             return
@@ -185,18 +168,16 @@ class AsistenciaFrame(ctk.CTkFrame):
         if asistencia_ya_registrada_hoy(dni, hoy_str):
             self.resultado_frame.configure(fg_color="#FFF8E1")
             self.label_vigencia.configure(
-                text="✅ Membresía vigente",
-                text_color=EXITO)
+                text="✅ Membresía vigente", text_color=EXITO)
             self.label_extra.configure(
-                text=f"⚠ Ya registró asistencia hoy",
+                text="⚠ Ya registró asistencia hoy",
                 text_color=ADVERTENCIA)
             return
 
         registrar_asistencia(dni, hoy_str, hora_str)
         self.resultado_frame.configure(fg_color="#EDF7E1")
         self.label_vigencia.configure(
-            text="✅ Membresía vigente",
-            text_color=EXITO)
+            text="✅ Membresía vigente", text_color=EXITO)
         self.label_extra.configure(
             text=f"Asistencia registrada a las {hora_str}",
             text_color=EXITO)

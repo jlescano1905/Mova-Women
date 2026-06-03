@@ -5,6 +5,12 @@ import os
 import sys
 from datetime import datetime
 
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+
 def _carpeta_app():
     if getattr(sys, "frozen", False):
         return os.path.dirname(sys.executable)
@@ -13,6 +19,51 @@ def _carpeta_app():
 
 BASE_DIR = _carpeta_app()
 DB_PATH  = os.path.join(BASE_DIR, "gimnasio.db")
+
+# ── Google Drive ─────────────────────────────────────────────
+SCOPES           = ["https://www.googleapis.com/auth/drive"]
+DRIVE_FOLDER_ID  = "1BEcIHd696ahEOAdiSEuTtliwR-p3PdL3"
+CREDENTIALS_PATH = os.path.join(BASE_DIR, "assets", "credentials_oauth.json")
+TOKEN_PATH       = os.path.join(BASE_DIR, "assets", "token.json")
+
+def _obtener_servicio_drive():
+    creds = None
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            with open(TOKEN_PATH, "w") as token:
+                token.write(creds.to_json())
+    if not creds:
+        return None
+    return build("drive", "v3", credentials=creds)
+
+def _subir_a_drive(ruta_archivo):
+    try:
+        servicio = _obtener_servicio_drive()
+        if not servicio:
+            return
+
+        nombre_archivo = os.path.basename(ruta_archivo)
+
+        # Eliminar si ya existe
+        resultados = servicio.files().list(
+            q=f"name='{nombre_archivo}' and '{DRIVE_FOLDER_ID}' in parents and trashed=false",
+            fields="files(id, name)"
+        ).execute()
+        for archivo in resultados.get("files", []):
+            servicio.files().delete(fileId=archivo["id"]).execute()
+
+        # Subir nuevo
+        metadata = {"name": nombre_archivo, "parents": [DRIVE_FOLDER_ID]}
+        media    = MediaFileUpload(ruta_archivo, mimetype="application/x-sqlite3")
+        servicio.files().create(
+            body=metadata, media_body=media, fields="id"
+        ).execute()
+
+    except Exception:
+        pass
 
 def get_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -191,3 +242,6 @@ def hacer_backup():
     ])
     while len(archivos) > 7:
         os.remove(archivos.pop(0))
+
+    # Subir el backup más reciente a Google Drive
+    _subir_a_drive(destino)
