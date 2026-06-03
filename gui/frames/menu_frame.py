@@ -32,7 +32,7 @@ class MenuFrame(ctk.CTkFrame):
             ("👤   Ingresar nueva cliente",      "nuevo_socio"),
             ("✅   Asistencia de cliente",         "asistencia"),
             ("📋   Lista de clientes",             "lista"),
-            ("✏️    Actualizar datos de cliente",  "actualizar"),
+            ("✏️    Ver datos de cliente",  "actualizar"),
         ]
 
         for i, (texto, destino) in enumerate(botones, start=1):

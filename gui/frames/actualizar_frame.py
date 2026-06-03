@@ -65,7 +65,7 @@ class ActualizarFrame(ctk.CTkFrame):
         card.grid_rowconfigure((0,1,2,3,4), weight=1)
 
         ctk.CTkLabel(
-            card, text="Actualizar datos de cliente",
+            card, text="Ver datos de cliente",
             font=fuente_titulo(), text_color=TEXTO
         ).grid(row=0, column=0, pady=(40, 0))
 

@@ -1,9 +1,10 @@
 # gui/frames/nuevo_socio_frame.py
 import customtkinter as ctk
 from reniec_api import consultar_dni
-from socio_logic import (validar_telefono, validar_dni, calcular_fecha_fin,
-                          texto_resumen, PLANES, fecha_registro_ahora,
-                          fecha_fin_ya_vencida, formatear_fecha_legible)
+from socio_logic import (validar_telefono, validar_dni, validar_dni_patron,
+                          calcular_fecha_fin, texto_resumen, PLANES,
+                          fecha_registro_ahora, fecha_fin_ya_vencida,
+                          formatear_fecha_legible)
 from database import insertar_socio, buscar_socio_por_dni
 from gui.widgets.fecha_picker import FechaPicker
 from gui.tema import *
@@ -71,7 +72,7 @@ class NuevoSocioFrame(ctk.CTkFrame):
 
         card = ctk.CTkFrame(
             f, fg_color=FONDO_CARD,
-            corner_radius=20, width=680, height=540)
+            corner_radius=24, width=860, height=660)
         card.grid(row=0, column=0, padx=20, pady=20)
         card.grid_propagate(False)
         card.grid_columnconfigure((0, 1), weight=1)
@@ -82,68 +83,69 @@ class NuevoSocioFrame(ctk.CTkFrame):
         ctk.CTkLabel(
             card, text="Datos de la nueva cliente",
             font=fuente_titulo(), text_color=TEXTO
-        ).grid(row=0, column=0, columnspan=2, pady=(30, 0))
+        ).grid(row=0, column=0, columnspan=2, pady=(36, 0))
 
         # Teléfono
         ctk.CTkLabel(
             card, text="Teléfono", anchor="w",
             font=fuente_label(), text_color=TEXTO
-        ).grid(row=1, column=0, sticky="w", padx=40)
+        ).grid(row=1, column=0, sticky="w", padx=50)
 
         self.entry_tel = ctk.CTkEntry(
-            card, placeholder_text="9 dígitos", height=46,
+            card, placeholder_text="9 dígitos", height=58,
             font=fuente_entrada(), fg_color=CAMPO,
             border_color=BTN_SECUNDARIO, text_color=TEXTO,
-            placeholder_text_color=TEXTO_CAMPO, corner_radius=10)
-        self.entry_tel.grid(row=2, column=0, padx=40, pady=(4,16), sticky="ew")
+            placeholder_text_color=TEXTO_CAMPO, corner_radius=12)
+        self.entry_tel.grid(row=2, column=0, padx=50, pady=(4,16), sticky="ew")
         self.entry_tel.bind("<Return>", lambda e: "break")
 
         # DNI
         ctk.CTkLabel(
             card, text="DNI", anchor="w",
             font=fuente_label(), text_color=TEXTO
-        ).grid(row=1, column=1, sticky="w", padx=40)
+        ).grid(row=1, column=1, sticky="w", padx=50)
 
         self.entry_dni = ctk.CTkEntry(
-            card, placeholder_text="8 dígitos", height=46,
+            card, placeholder_text="8 dígitos", height=58,
             font=fuente_entrada(), fg_color=CAMPO,
             border_color=BTN_SECUNDARIO, text_color=TEXTO,
-            placeholder_text_color=TEXTO_CAMPO, corner_radius=10)
-        self.entry_dni.grid(row=2, column=1, padx=40, pady=(4,16), sticky="ew")
+            placeholder_text_color=TEXTO_CAMPO, corner_radius=12)
+        self.entry_dni.grid(row=2, column=1, padx=50, pady=(4,16), sticky="ew")
         self.entry_dni.bind("<Return>", lambda e: "break")
 
         # Botón consultar
         ctk.CTkButton(
-            card, text="🔍  Consultar DNI", height=46,
+            card, text="🔍  Consultar DNI", height=58,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=10, command=self._consultar_reniec
-        ).grid(row=3, column=0, columnspan=2, padx=40, pady=(0,16), sticky="ew")
+            corner_radius=12, command=self._consultar_reniec
+        ).grid(row=3, column=0, columnspan=2, padx=50, pady=(0,16), sticky="ew")
 
-        # Separador visual
-        sep = ctk.CTkFrame(card, fg_color=CAMPO, height=2, corner_radius=2)
-        sep.grid(row=4, column=0, columnspan=2, padx=40, sticky="ew")
+        # Separador
+        ctk.CTkFrame(
+            card, fg_color=CAMPO, height=2, corner_radius=2
+        ).grid(row=4, column=0, columnspan=2, padx=50, sticky="ew")
 
         # Resultado RENIEC
         ctk.CTkLabel(
             card, text="Nombre:", anchor="w",
             font=fuente_label(), text_color=TEXTO_SUAVE
-        ).grid(row=5, column=0, sticky="w", padx=40)
+        ).grid(row=5, column=0, sticky="w", padx=50)
 
         self.label_nombre_valor = ctk.CTkLabel(
             card, text="—", anchor="w",
-            font=fuente(15, "bold"), text_color=TEXTO)
-        self.label_nombre_valor.grid(row=5, column=1, sticky="w", padx=40)
+            font=fuente(20, "bold"), text_color=TEXTO)
+        self.label_nombre_valor.grid(row=5, column=1, sticky="w", padx=50)
 
         ctk.CTkLabel(
             card, text="Apellido:", anchor="w",
             font=fuente_label(), text_color=TEXTO_SUAVE
-        ).grid(row=6, column=0, sticky="w", padx=40)
+        ).grid(row=6, column=0, sticky="w", padx=50)
 
         self.label_apellido_valor = ctk.CTkLabel(
             card, text="—", anchor="w",
-            font=fuente(15, "bold"), text_color=TEXTO)
-        self.label_apellido_valor.grid(row=6, column=1, sticky="w", padx=40)
+            font=fuente(20, "bold"), text_color=TEXTO)
+        self.label_apellido_valor.grid(row=6, column=1, sticky="w", padx=50)
 
         # Error
         self.label_err_p1 = ctk.CTkLabel(
@@ -152,15 +154,15 @@ class NuevoSocioFrame(ctk.CTkFrame):
 
         # Siguiente
         self.btn_siguiente_p1 = ctk.CTkButton(
-            card, text="Siguiente  →", height=50,
+            card, text="Siguiente  →", height=62,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=12, state="disabled",
+            corner_radius=14, state="disabled",
             command=lambda: self._mostrar_paso(2)
         )
         self.btn_siguiente_p1.grid(
             row=8, column=0, columnspan=2,
-            padx=40, pady=(8, 30), sticky="ew")
+            padx=50, pady=(8, 36), sticky="ew")
 
         return f
 
@@ -173,6 +175,9 @@ class NuevoSocioFrame(ctk.CTkFrame):
             return
         if not validar_dni(dni):
             self._set_error_p1("⚠ El DNI debe tener 8 dígitos numéricos")
+            return
+        if not validar_dni_patron(dni):
+            self._set_error_p1("⚠ El DNI ingresado no es válido")
             return
         if buscar_socio_por_dni(dni):
             self._set_error_p1("⚠ Este DNI ya está registrado en el sistema")
@@ -214,7 +219,7 @@ class NuevoSocioFrame(ctk.CTkFrame):
 
         card = ctk.CTkFrame(
             f, fg_color=FONDO_CARD,
-            corner_radius=20, width=620, height=500)
+            corner_radius=24, width=780, height=620)
         card.grid(row=0, column=0, padx=20, pady=20)
         card.grid_propagate(False)
         card.grid_columnconfigure(0, weight=1)
@@ -225,7 +230,7 @@ class NuevoSocioFrame(ctk.CTkFrame):
         ctk.CTkLabel(
             card, text="Selecciona el plan",
             font=fuente_titulo(), text_color=TEXTO
-        ).grid(row=0, column=0, pady=(30, 0))
+        ).grid(row=0, column=0, pady=(36, 0))
 
         self.plan_var = ctk.StringVar(value="")
 
@@ -233,37 +238,36 @@ class NuevoSocioFrame(ctk.CTkFrame):
             ctk.CTkRadioButton(
                 card, text=plan,
                 variable=self.plan_var, value=plan,
-                font=fuente(16),
-                text_color=TEXTO,
-                fg_color=BTN_PRINCIPAL,
-                hover_color="#9DC95A",
+                font=fuente(22), text_color=TEXTO,
+                fg_color=BTN_PRINCIPAL, hover_color="#9DC95A",
+                radiobutton_width=28, radiobutton_height=28,
                 command=self._on_plan_seleccionado
-            ).grid(row=i, column=0, sticky="w", padx=100, pady=6)
+            ).grid(row=i, column=0, sticky="w", padx=120, pady=8)
 
         self.label_err_p2 = ctk.CTkLabel(
             card, text="", font=fuente_pequeña(), text_color=ERROR)
         self.label_err_p2.grid(row=6, column=0)
 
         nav = ctk.CTkFrame(card, fg_color="transparent")
-        nav.grid(row=7, column=0, padx=40, pady=(8, 30), sticky="ew")
+        nav.grid(row=7, column=0, padx=50, pady=(8, 36), sticky="ew")
         nav.grid_columnconfigure((0, 1), weight=1)
 
         ctk.CTkButton(
-            nav, text="←  Volver", height=50,
+            nav, text="←  Volver", height=62,
             font=fuente_boton(), fg_color=BTN_SECUNDARIO,
             hover_color="#C4A882", text_color=TEXTO,
-            corner_radius=12,
+            corner_radius=14,
             command=lambda: self._mostrar_paso(1)
-        ).grid(row=0, column=0, padx=(0, 8), sticky="ew")
+        ).grid(row=0, column=0, padx=(0, 10), sticky="ew")
 
         self.btn_siguiente_p2 = ctk.CTkButton(
-            nav, text="Siguiente  →", height=50,
+            nav, text="Siguiente  →", height=62,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=12, state="disabled",
+            corner_radius=14, state="disabled",
             command=self._ir_paso3
         )
-        self.btn_siguiente_p2.grid(row=0, column=1, padx=(8, 0), sticky="ew")
+        self.btn_siguiente_p2.grid(row=0, column=1, padx=(10, 0), sticky="ew")
 
         return f
 
@@ -282,7 +286,7 @@ class NuevoSocioFrame(ctk.CTkFrame):
 
         card = ctk.CTkFrame(
             f, fg_color=FONDO_CARD,
-            corner_radius=20, width=660, height=520)
+            corner_radius=24, width=820, height=640)
         card.grid(row=0, column=0, padx=20, pady=20)
         card.grid_propagate(False)
         card.grid_columnconfigure(0, weight=1)
@@ -293,52 +297,52 @@ class NuevoSocioFrame(ctk.CTkFrame):
         ctk.CTkLabel(
             card, text="Confirmar e inscribir",
             font=fuente_titulo(), text_color=TEXTO
-        ).grid(row=0, column=0, pady=(30, 0))
+        ).grid(row=0, column=0, pady=(36, 0))
 
         ctk.CTkLabel(
             card, text="Fecha de inicio de membresía:",
             font=fuente_label(), text_color=TEXTO_SUAVE
-        ).grid(row=1, column=0, padx=60, sticky="w")
+        ).grid(row=1, column=0, padx=80, sticky="w")
 
         self.fecha_picker = FechaPicker(card)
-        self.fecha_picker.grid(row=2, column=0, padx=60, pady=(8,8), sticky="w")
+        self.fecha_picker.grid(row=2, column=0, padx=80, pady=(8,8), sticky="w")
 
         ctk.CTkButton(
-            card, text="👁  Ver resumen", height=46,
+            card, text="👁  Ver resumen", height=58,
             font=fuente_boton(), fg_color=BTN_SECUNDARIO,
             hover_color="#C4A882", text_color=TEXTO,
-            corner_radius=12, command=self._actualizar_resumen
-        ).grid(row=3, column=0, padx=60, pady=(0, 8), sticky="ew")
+            corner_radius=14, command=self._actualizar_resumen
+        ).grid(row=3, column=0, padx=80, pady=(0, 8), sticky="ew")
 
         self.label_resumen = ctk.CTkLabel(
             card, text="",
-            font=fuente(14), text_color=TEXTO,
-            wraplength=520, justify="left")
-        self.label_resumen.grid(row=4, column=0, padx=60, pady=(0, 4))
+            font=fuente(18), text_color=TEXTO,
+            wraplength=660, justify="left")
+        self.label_resumen.grid(row=4, column=0, padx=80, pady=(0, 4))
 
         self.label_err_p3 = ctk.CTkLabel(
             card, text="",
-            font=fuente_pequeña(), wraplength=520)
-        self.label_err_p3.grid(row=5, column=0, padx=60)
+            font=fuente_pequeña(), wraplength=660)
+        self.label_err_p3.grid(row=5, column=0, padx=80)
 
         nav = ctk.CTkFrame(card, fg_color="transparent")
-        nav.grid(row=6, column=0, padx=60, pady=(8, 30), sticky="ew")
+        nav.grid(row=6, column=0, padx=80, pady=(8, 36), sticky="ew")
         nav.grid_columnconfigure((0, 1), weight=1)
 
         ctk.CTkButton(
-            nav, text="←  Volver", height=50,
+            nav, text="←  Volver", height=62,
             font=fuente_boton(), fg_color=BTN_SECUNDARIO,
             hover_color="#C4A882", text_color=TEXTO,
-            corner_radius=12,
+            corner_radius=14,
             command=lambda: self._mostrar_paso(2)
-        ).grid(row=0, column=0, padx=(0, 8), sticky="ew")
+        ).grid(row=0, column=0, padx=(0, 10), sticky="ew")
 
         ctk.CTkButton(
-            nav, text="✅  Confirmar e inscribir", height=50,
+            nav, text="✅  Confirmar e inscribir", height=62,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=12, command=self._confirmar_inscripcion
-        ).grid(row=0, column=1, padx=(8, 0), sticky="ew")
+            corner_radius=14, command=self._confirmar_inscripcion
+        ).grid(row=0, column=1, padx=(10, 0), sticky="ew")
 
         return f
 
@@ -382,18 +386,18 @@ class NuevoSocioFrame(ctk.CTkFrame):
         dialogo.grab_set()
         dialogo.configure(fg_color=FONDO)
         dialogo.update_idletasks()
-        x = (dialogo.winfo_screenwidth()  // 2) - 260
-        y = (dialogo.winfo_screenheight() // 2) - 120
-        dialogo.geometry(f"520x240+{x}+{y}")
+        x = (dialogo.winfo_screenwidth()  // 2) - 300
+        y = (dialogo.winfo_screenheight() // 2) - 150
+        dialogo.geometry(f"600x300+{x}+{y}")
 
-        inner = ctk.CTkFrame(dialogo, fg_color=FONDO_CARD, corner_radius=16)
+        inner = ctk.CTkFrame(dialogo, fg_color=FONDO_CARD, corner_radius=20)
         inner.pack(fill="both", expand=True, padx=16, pady=16)
 
         ctk.CTkLabel(
             inner,
             text="¿Confirmas la siguiente inscripción?",
-            font=fuente(17, "bold"), text_color=TEXTO
-        ).pack(pady=(24, 8), padx=30)
+            font=fuente(22, "bold"), text_color=TEXTO
+        ).pack(pady=(30, 10), padx=40)
 
         ctk.CTkLabel(
             inner,
@@ -401,11 +405,11 @@ class NuevoSocioFrame(ctk.CTkFrame):
                   f"Plan: {self._plan}  |  "
                   f"{formatear_fecha_legible(self._fecha_ini)} → "
                   f"{formatear_fecha_legible(self._fecha_fin)}"),
-            font=fuente(13), text_color=TEXTO_SUAVE
-        ).pack(pady=(0, 20), padx=30)
+            font=fuente(17), text_color=TEXTO_SUAVE
+        ).pack(pady=(0, 24), padx=40)
 
         btn_f = ctk.CTkFrame(inner, fg_color="transparent")
-        btn_f.pack(fill="x", padx=30, pady=(0, 20))
+        btn_f.pack(fill="x", padx=40, pady=(0, 24))
         btn_f.grid_columnconfigure((0, 1), weight=1)
 
         def _cancelar():
@@ -424,7 +428,7 @@ class NuevoSocioFrame(ctk.CTkFrame):
                     fecha_registro = fecha_registro_ahora()
                 )
                 self.label_err_p3.configure(
-                    text=f"✅ {self._nombre} {self._apellido} inscrito correctamente.",
+                    text=f"✅ {self._nombre} {self._apellido} inscrita correctamente.",
                     text_color=EXITO)
                 self.app._actualizar_campana()
                 self.after(2000, lambda: self.app.mostrar_frame("menu"))
@@ -433,15 +437,15 @@ class NuevoSocioFrame(ctk.CTkFrame):
                     text=f"⚠ Error al guardar: {str(e)}", text_color=ERROR)
 
         ctk.CTkButton(
-            btn_f, text="Cancelar", height=44,
+            btn_f, text="Cancelar", height=54,
             font=fuente_boton(), fg_color=BTN_SECUNDARIO,
             hover_color="#C4A882", text_color=TEXTO,
-            corner_radius=10, command=_cancelar
-        ).grid(row=0, column=0, padx=(0, 8), sticky="ew")
+            corner_radius=12, command=_cancelar
+        ).grid(row=0, column=0, padx=(0, 10), sticky="ew")
 
         ctk.CTkButton(
-            btn_f, text="✅  Sí, inscribir", height=44,
+            btn_f, text="✅  Sí, inscribir", height=54,
             font=fuente_boton(), fg_color=BTN_PRINCIPAL,
             hover_color="#9DC95A", text_color=TEXTO,
-            corner_radius=10, command=_guardar
-        ).grid(row=0, column=1, padx=(8, 0), sticky="ew")
+            corner_radius=12, command=_guardar
+        ).grid(row=0, column=1, padx=(10, 0), sticky="ew")
