@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 # ── Planes disponibles ───────────────────────────────────────
 
 PLANES = {
+    "15 días": relativedelta(days=15),   # NUEVO
     "1 mes":   relativedelta(months=1),
     "3 meses": relativedelta(months=3),
     "6 meses": relativedelta(months=6),
@@ -69,12 +70,6 @@ def validar_dni_patron(dni):
 # ── Formato tipo de plan según vigencia ──────────────────────
 
 def formato_tipo_plan(tipo_plan, fecha_fin_str):
-    """
-    Retorna el tipo de plan formateado según vigencia:
-    - Vigente:  texto normal y color verde suave
-    - Vencido:  '⚠ Essential (vencido)' y color gris
-    Retorna (texto, color)
-    """
     if fecha_fin_ya_vencida(fecha_fin_str):
         return f"⚠ {tipo_plan} (vencido)", "#A0A0A0"
     return tipo_plan, "#7DBF5A"

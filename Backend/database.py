@@ -1,4 +1,5 @@
 # database.py
+import threading
 from datetime import datetime, date, timedelta
 from supabase import create_client, Client
 
@@ -6,17 +7,24 @@ from supabase import create_client, Client
 SUPABASE_URL = "https://ybqqsqbqdetzzbzawngn.supabase.co"
 SUPABASE_KEY = "sb_publishable_uHiO3E6F_CZgzjv7lI8w_Q_xn-pfFL_"
 
-# Cliente único reutilizable
-_client: Client = None
+# ── Singleton por hilo ───────────────────────────────────────
+# Cada hilo tiene su propio cliente reutilizable.
+# Evita crear un cliente nuevo por cada llamada (overhead)
+# y evita que hilos compartan el mismo cliente (cortes HTTP).
+_local = threading.local()
 
 def get_client() -> Client:
-    global _client
-    if _client is None:
-        _client = create_client(SUPABASE_URL, SUPABASE_KEY)
-    return _client
+    if not hasattr(_local, "client"):
+        _local.client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    return _local.client
 
 def init_db():
-    get_client()
+    """
+    Precalienta la conexión al arrancar el splash screen.
+    Así cuando el usuario llega al menú la conexión ya está lista.
+    """
+    sb = get_client()
+    sb.table("socios").select("id").limit(1).execute()
 
 def hacer_backup():
     pass
@@ -79,7 +87,6 @@ def socios_proximos_a_vencer(dias=4):
     hoy     = date.today()
     limite  = (hoy + timedelta(days=dias)).strftime("%Y-%m-%d")
     hoy_str = hoy.strftime("%Y-%m-%d")
-
     res = sb.table("socios").select("*").eq(
         "notificacion_cerrada", 0
     ).lte("fecha_fin", limite).gte("fecha_fin", hoy_str).execute()
@@ -102,11 +109,27 @@ def asistencia_ya_registrada_hoy(dni, fecha):
     return len(res.data) > 0
 
 def obtener_asistencias_por_dni(dni):
-    """
-    Retorna todas las fechas de asistencia de una clienta.
-    Resultado: lista de strings 'YYYY-MM-DD'
-    """
     sb = get_client()
     res = sb.table("asistencias").select("fecha").eq(
         "dni", dni).order("fecha", desc=False).execute()
     return [r["fecha"] for r in res.data]
+
+def obtener_asistencias_por_fecha(fecha_str):
+    """
+    Una sola consulta via vista SQL asistencias_detalle.
+    """
+    sb = get_client()
+    res = sb.table("asistencias_detalle").select(
+        "dni, nombre, apellido, tipo_plan, tipo_documento, hora"
+    ).eq("fecha", fecha_str).order("hora").execute()
+
+    return [
+        {
+            "dni":            r["dni"],
+            "nombre":         f"{r['nombre']} {r['apellido']}",
+            "tipo_plan":      r.get("tipo_plan", "—"),
+            "tipo_documento": r.get("tipo_documento", "DNI"),
+            "hora":           r["hora"],
+        }
+        for r in res.data
+    ]

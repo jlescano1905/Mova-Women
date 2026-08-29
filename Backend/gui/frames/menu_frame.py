@@ -12,16 +12,17 @@ class MenuFrame(ctk.CTkFrame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
+        # ── CAMBIO: card más alta para acomodar 5 botones ────
         card = ctk.CTkFrame(
             self, fg_color=FONDO_CARD,
-            corner_radius=24, width=780, height=780)
+            corner_radius=24, width=780, height=900)
         card.grid(row=0, column=0)
         card.grid_propagate(False)
         card.grid_columnconfigure(0, weight=1)
         card.grid_rowconfigure(0, weight=2)
-        card.grid_rowconfigure((1,2,3,4), weight=3)
-        card.grid_rowconfigure(5, weight=1)
-        card.grid_rowconfigure(6, weight=2)
+        card.grid_rowconfigure((1,2,3,4,5), weight=3)
+        card.grid_rowconfigure(6, weight=1)
+        card.grid_rowconfigure(7, weight=2)
 
         ctk.CTkLabel(
             card,
@@ -29,11 +30,13 @@ class MenuFrame(ctk.CTkFrame):
             font=fuente_titulo(), text_color=TEXTO
         ).grid(row=0, column=0, pady=(36, 0))
 
+        # ── CAMBIO: 5 botones, "Control de asistencias" nuevo ─
         botones = [
-            ("👤   Ingresar nueva clienta",      "nuevo_socio"),
-            ("✅   Asistencia de clienta",         "asistencia"),
-            ("📋   Lista de clientas",             "lista"),
-            ("📁   Ver datos de clienta",          "actualizar"),
+            ("👤   Ingresar nueva clienta",       "nuevo_socio"),
+            ("✅   Asistencia de clienta",          "asistencia"),
+            ("📋   Lista de clientas",              "lista"),
+            ("📊   Control de asistencias",         "control_asistencias"),  # NUEVO
+            ("📁   Ver datos de clienta",           "actualizar"),
         ]
 
         for i, (texto, destino) in enumerate(botones, start=1):
@@ -53,7 +56,7 @@ class MenuFrame(ctk.CTkFrame):
         # Separador
         ctk.CTkFrame(
             card, fg_color=CAMPO, height=2, corner_radius=2
-        ).grid(row=5, column=0, sticky="ew", padx=70, pady=(8, 0))
+        ).grid(row=6, column=0, sticky="ew", padx=70, pady=(8, 0))
 
         # Botón cerrar sesión
         ctk.CTkButton(
@@ -68,7 +71,7 @@ class MenuFrame(ctk.CTkFrame):
             border_color=BTN_SECUNDARIO,
             corner_radius=12,
             command=self._cerrar_sesion
-        ).grid(row=6, column=0, padx=70, pady=(10, 28), sticky="ew")
+        ).grid(row=7, column=0, padx=70, pady=(10, 28), sticky="ew")
 
     def _cerrar_sesion(self):
         dialogo = ctk.CTkToplevel(self)

@@ -2,6 +2,7 @@
 import customtkinter as ctk
 from gui.tema import *
 from database import socios_proximos_a_vencer
+from gui.frames.control_asistencias_frame import ControlAsistenciasFrame
 
 class MainWindow(ctk.CTk):
     def __init__(self, logo_img=None):
@@ -38,6 +39,7 @@ class MainWindow(ctk.CTk):
             ("actualizar",     ActualizarFrame),
             ("notificaciones", NotifFrame),
             ("historial",      HistorialFrame),
+            ("control_asistencias", ControlAsistenciasFrame),
         ]:
             frame = ClaseFrame(self.contenedor, self)
             frame.grid(row=0, column=0, sticky="nsew")
@@ -109,6 +111,7 @@ class MainWindow(ctk.CTk):
         "actualizar":     "Ver datos de clienta",
         "notificaciones": "Notificaciones",
         "historial":      "Historial de asistencias",
+        "control_asistencias": "Control de asistencias",
     }
 
     def mostrar_frame(self, nombre):
